@@ -5,8 +5,11 @@ import { useLoadUserQuery } from "../../app/api/apiSlice.js";
 import ProfileImage from "./ProfileImage.jsx";
 import UserCoursesMenu from "./UserCourses.jsx";
 import { useEffect } from "react";
-import { useUpdateAvatarMutation } from "../../features/user/userApi.js";
-import { Toaster, toast } from "react-hot-toast";
+import {
+  useUpdateAvatarMutation,
+  useUpdateCoverMutation,
+} from "../../features/user/userApi.js";
+import { Toaster } from "react-hot-toast";
 import { useNavigate } from "react-router-dom";
 import MyCourses from "./MyCourses.jsx";
 import PurchasedCourses from "./PurchasedCourses.jsx";
@@ -16,6 +19,8 @@ const Profile = ({ user }) => {
   const [logout, setLogout] = useState(false);
   const [loadUser, setLoadUser] = useState(false);
   const [updateAvatar, { isSuccess, error }] = useUpdateAvatarMutation();
+  const [updateCover, { isSuccess: coverSuccess, error: errorCover }] =
+    useUpdateCoverMutation();
   useLoadUserQuery(undefined, {
     skip: loadUser ? false : true,
   });
@@ -24,7 +29,6 @@ const Profile = ({ user }) => {
   });
 
   const navigate = useNavigate();
-
   const imageHandler = async (e) => {
     const fileReader = new FileReader();
 
@@ -43,9 +47,8 @@ const Profile = ({ user }) => {
 
     fileReader.onload = async () => {
       if (fileReader.readyState === 2) {
-        const avatar = fileReader.result;
-        await updateAvatar(avatar);
-        setLoadUser(true); // Trigger loadUserQuery after the mutation is successful
+        const cover = fileReader.result;
+        updateCover(cover);
       }
     };
 
@@ -54,6 +57,11 @@ const Profile = ({ user }) => {
 
   useEffect(() => {
     if (isSuccess) {
+      window.location.reload();
+      setLoadUser(true);
+    }
+    if (coverSuccess) {
+      window.location.reload();
       setLoadUser(true);
     }
     if (success) {
@@ -62,10 +70,22 @@ const Profile = ({ user }) => {
     if (error) {
       console.log(error);
     }
-    if (isSuccess) {
-      toast.success("Profile updated");
+    if (errorCover) {
+      console.log(error);
     }
-  }, [error, isSuccess, loadUser, success, navigate, logout]);
+    if (loadUser) {
+      setLoadUser(false);
+    }
+  }, [
+    error,
+    loadUser,
+    success,
+    navigate,
+    logout,
+    errorCover,
+    isSuccess,
+    coverSuccess,
+  ]);
 
   const logOutHandler = async () => {
     setLogout(true);
@@ -80,7 +100,6 @@ const Profile = ({ user }) => {
       <div className="w-[85%] flex mx-auto mt-[50px] mb-[50px]">
         <ProfileImage
           user={user}
-          updateAvatar={updateAvatar}
           imageHandler={imageHandler}
           coverImageHandler={coverImageHandler}
           logOutHandler={logOutHandler}

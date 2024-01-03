@@ -12,6 +12,7 @@ import {
   updateProfilePicture,
   addUnit,
   getAllUsers,
+  updateCoverPicture,
 } from "../controllers/user.controller.js";
 import { authorizeRoles, isAutheticated } from "../middleware/auth.js";
 const userRouter = express.Router();
@@ -26,6 +27,7 @@ userRouter.post("/social-auth", socialAuth);
 userRouter.put("/update-user-info", isAutheticated, updateUserInfo);
 userRouter.put("/update-user-password", isAutheticated, updatePassword);
 userRouter.put("/update-user-avatar", isAutheticated, updateProfilePicture);
+userRouter.put("/update-user-cover", isAutheticated, updateCoverPicture);
 userRouter.put("/add-unit", isAutheticated, authorizeRoles("admin"), addUnit);
 userRouter.get(
   "/get-all-users",

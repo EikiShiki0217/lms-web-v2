@@ -35,6 +35,10 @@ const userSchema = new mongoose.Schema(
       public_id: String,
       url: String,
     },
+    cover: {
+      public_id: String,
+      url: String,
+    },
     role: {
       type: String,
       default: "user",

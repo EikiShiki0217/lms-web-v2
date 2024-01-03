@@ -228,20 +228,26 @@ export const socialAuth = CatchAsyncError(async (req, res, next) => {
 // update user info
 export const updateUserInfo = CatchAsyncError(async (req, res, next) => {
   try {
-    const { name, email } = req.body;
+    const { name, email, password } = req.body;
     const userId = req.user?._id;
     const user = await userModel.findById(userId);
 
     if (email && user) {
-      const isEmailExist = await userModel.findOne({ email });
-      if (isEmailExist) {
-        return next(new ErrorHandler("Email already exist", 400));
+      if (email !== user.email) {
+        const isEmailExist = await userModel.findOne({ email });
+        if (isEmailExist) {
+          return next(new ErrorHandler("Email already exist", 400));
+        }
+        user.email = email;
       }
-      user.email = email;
     }
 
     if (name && user) {
       user.name = name;
+    }
+
+    if (password && user) {
+      user.password = password;
     }
 
     await user?.save();
@@ -303,7 +309,6 @@ export const updateProfilePicture = CatchAsyncError(async (req, res, next) => {
         await cloudinary.v2.uploader.destroy(user?.avatar?.public_id);
         const myCloud = await cloudinary.v2.uploader.upload(avatar, {
           folder: "avatars",
-          width: 150,
         });
         user.avatar = {
           public_id: myCloud.public_id,
@@ -312,9 +317,48 @@ export const updateProfilePicture = CatchAsyncError(async (req, res, next) => {
       } else {
         const myCloud = await cloudinary.v2.uploader.upload(avatar, {
           folder: "avatars",
-          width: 150,
         });
         user.avatar = {
+          public_id: myCloud.public_id,
+          url: myCloud.secure_url,
+        };
+      }
+    }
+
+    await user?.save();
+
+    res.status(201).json({
+      success: true,
+      user,
+    });
+  } catch (error) {
+    return next(new ErrorHandler(error.message, 400));
+  }
+});
+
+export const updateCoverPicture = CatchAsyncError(async (req, res, next) => {
+  try {
+    const { cover } = req.body;
+
+    const userId = req.user?._id;
+
+    const user = await userModel.findById(userId);
+
+    if (cover && user) {
+      if (user?.cover?.public_id) {
+        await cloudinary.v2.uploader.destroy(user?.cover?.public_id);
+        const myCloud = await cloudinary.v2.uploader.upload(cover, {
+          folder: "covers",
+        });
+        user.cover = {
+          public_id: myCloud.public_id,
+          url: myCloud.secure_url,
+        };
+      } else {
+        const myCloud = await cloudinary.v2.uploader.upload(cover, {
+          folder: "covers",
+        });
+        user.cover = {
           public_id: myCloud.public_id,
           url: myCloud.secure_url,
         };

@@ -1,33 +1,36 @@
 "use client";
-import React from "react";
-import coverDefault from "../../images/109700818_p0.png";
+import React, { useState } from "react";
 import avatarDefault from "../../images/avatar.png";
 import { AiOutlineCamera } from "react-icons/ai";
+import UserModal from "./UserModal";
+import Edit from "./Edit";
+import Charge from "./Charge";
 const ProfileImage = ({
   user,
-  updateAvatar,
   imageHandler,
   coverImageHandler,
   logOutHandler,
 }) => {
+  const [open, setOpen] = useState(false);
+  const [route, setRoute] = useState("");
   return (
     <div className="w-[100%] flex">
       <div className="w-[100%]">
         <div className=" relative w-[100%]">
           <img
-            src={coverDefault}
+            src={user.cover ? user.cover.url : ""}
             className="w-[100%] h-[25rem] object-cover bg-center"
             alt=""
           />
           <input
             type="file"
-            name=""
-            id="avatar"
+            name="cover"
+            id="cover"
             className="hidden"
             onChange={coverImageHandler}
             accept="image/png, image/jpg, image/jpeg, image/webp"
           />
-          <label htmlFor="avatar">
+          <label htmlFor="cover">
             <div className="w-[40px] h-[40px] bg-slate-900 rounded-full absolute bottom-2 right-2 flex items-center justify-center cursor-pointer">
               <AiOutlineCamera size={20} className="z-1" />
             </div>
@@ -45,7 +48,7 @@ const ProfileImage = ({
               </div>
               <input
                 type="file"
-                name=""
+                name="avatar"
                 id="avatar"
                 className="hidden"
                 onChange={imageHandler}
@@ -57,9 +60,10 @@ const ProfileImage = ({
                 </div>
               </label>
             </div>
-            <div className="flex relative">
-              <p className="ml-5 text-[30px] mb-4 flex items-end">
-                {user.name.split(" ")[0]}
+            <div className="flex relative flex-col justify-end">
+              <p className="ml-5 text-[30px] flex items-end">{user.name}</p>
+              <p className="ml-5 text-[18px] mb-1 text-[#ffffff8b] flex items-end">
+                {user.email}
               </p>
             </div>
           </div>
@@ -73,11 +77,23 @@ const ProfileImage = ({
                   Үлдэгдэл: {user.unit}
                 </p>
               </div>
-              <div className="ml-5 mb-4 p-5 h-[40px] border border-[#37a39a] justify-center text-[#fff] rounded-[3px] mt-8 cursor-pointer flex items-center">
+              <div
+                className="ml-5 mb-4 p-5 h-[40px] border border-[#37a39a] justify-center text-[#fff] rounded-[3px] mt-8 cursor-pointer flex items-center"
+                onClick={() => {
+                  setOpen(true);
+                  setRoute("Charge");
+                }}
+              >
                 Цэнэглэх
               </div>
-              <div className="ml-5 mb-4 p-5 h-[40px] border border-[#37a39a] justify-center text-[#fff] rounded-[3px] mt-8 cursor-pointer flex items-center">
-                Хувийн мэдээлэл
+              <div
+                className="ml-5 mb-4 p-5 h-[40px] border border-[#37a39a] justify-center text-[#fff] rounded-[3px] mt-8 cursor-pointer flex items-center"
+                onClick={() => {
+                  setOpen(true);
+                  setRoute("Edit");
+                }}
+              >
+                Мэдээлэл засах
               </div>
               <div
                 className="mb-4 ml-5 p-5 h-[40px] border border-[#37a39a] justify-center text-[#fff] rounded-[3px] mt-8 cursor-pointer flex items-center"
@@ -89,6 +105,32 @@ const ProfileImage = ({
           </div>
         </div>
       </div>
+      {route === "Charge" && (
+        <>
+          {open && (
+            <UserModal
+              open={open}
+              user={user}
+              setOpen={setOpen}
+              setRoute={setRoute}
+              component={Charge}
+            />
+          )}
+        </>
+      )}
+      {route === "Edit" && (
+        <>
+          {open && (
+            <UserModal
+              open={open}
+              user={user}
+              setOpen={setOpen}
+              setRoute={setRoute}
+              component={Edit}
+            />
+          )}
+        </>
+      )}
     </div>
   );
 };
