@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import CoursePlayer from "../../utils/CoursePlayer";
 import Ratings from "../../utils/Ratings";
 import { IoCheckmarkDoneOutline } from "react-icons/io5";
@@ -6,15 +6,29 @@ import { IoCheckmarkDoneOutline } from "react-icons/io5";
 const CoursePreview = ({
   active,
   setActive,
-  courseData,
+  courseInfo,
+  courseContentData,
+  benefits,
+  videoFiles,
+  prerequisites,
   handleCourseCreate,
 }) => {
-  console.log(courseData);
+  const [demoUrl, setDemoUrl] = useState(null);
+
   const discountPercentege =
-    ((courseData?.estimatedPrice - courseData?.price) /
-      courseData?.estimatedPrice) *
+    ((courseInfo?.estimatedPrice - courseInfo?.price) /
+      courseInfo?.estimatedPrice) *
     100;
   const discountPercentegePrice = discountPercentege.toFixed(0);
+
+  useEffect(() => {
+    console.log(videoFiles);
+    if (videoFiles && videoFiles.length > 0) {
+      const videoFile = videoFiles[0];
+      const videoUrl = URL.createObjectURL(videoFile);
+      setDemoUrl(videoUrl);
+    }
+  }, [videoFiles]);
 
   const prevButton = () => {
     setActive(active - 1);
@@ -28,16 +42,16 @@ const CoursePreview = ({
       <div className="w-full relative">
         <div className="w-full mt-10">
           <CoursePlayer
-            videoUrl={courseData?.demoUrl}
-            title={courseData?.title}
+            videoUrl={typeof demoUrl === "string" ? demoUrl : null}
+            title={courseInfo?.title}
           />
         </div>
         <div className="flex item-center">
           <h1 className="pt-3 text-[25px]">
-            {courseData?.price === 0 ? "Free" : courseData?.price + "₮"}
+            {courseInfo?.price === 0 ? "Free" : courseInfo?.price + "₮"}
           </h1>
           <h5 className="pl-3 text-[20px] mt-2 line-through opacity-80">
-            {courseData?.estimatedPrice}₮
+            {courseInfo?.estimatedPrice}₮
           </h5>
 
           <h4 className="pl-5 pt-3 text-[25px]">
@@ -46,7 +60,7 @@ const CoursePreview = ({
         </div>
         <div className="flex items-center">
           <div className=" flex flex-row justify-center items-center py-3 px-6 rounded-full min-h-[45px] text-[16px] font-Poppins font-semibold text-white !w-[180px] my-3 !bg-[crimson] cursor-not-allowed">
-            Buy now {courseData?.price}₮
+            Buy now {courseInfo?.price}₮
           </div>
         </div>
         <div className="flex items-center">
@@ -69,7 +83,7 @@ const CoursePreview = ({
       <div className="w-full">
         <div className="w-full 800px:pr-5">
           <h1 className="text-[25px] font-Poppins font-[600]">
-            {courseData?.name}
+            {courseInfo?.name}
           </h1>
           <div className="fleex items-center justify-between pt-3">
             <div className="flex items-center">
@@ -83,7 +97,7 @@ const CoursePreview = ({
             What you will learn from this course?
           </h1>
         </div>
-        {courseData?.benefits?.map((item, index) => (
+        {benefits?.map((item, index) => (
           <div className="w-full flex 800px:items-center py-2" key={index}>
             <div className="w-[15px] mr-1">
               <IoCheckmarkDoneOutline size={20} />
@@ -98,7 +112,7 @@ const CoursePreview = ({
             Course Details
           </h1>
           <p className="text-[18px] mt-[20px] whitespace-pre-line w-full overflow-hidden">
-            {courseData?.description}
+            {courseInfo?.description}
           </p>
         </div>
         <br />

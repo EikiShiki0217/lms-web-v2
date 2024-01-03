@@ -18,7 +18,7 @@ import {
 } from "../../features/courses/coursesApi";
 import { toast, Toaster } from "react-hot-toast";
 import { useEffect } from "react";
-import { format } from "timeago.js";
+import TimeAgo from "react-timeago";
 import Ratings from "../../utils/Ratings";
 
 const CourseContentMedia = ({
@@ -40,16 +40,14 @@ const CourseContentMedia = ({
   ] = useAddNewQuestionMutation();
   const [
     addAnswerInQuestion,
-    { isSuccess: answerSuccess, isLoading: answerLoading, error: answerError },
+    { isSuccess: answerSuccess, error: answerError },
   ] = useAddAnswerInQuestionMutation();
   const [
     addNewReview,
     { isSuccess: reviewSuccess, isLoading: reviewLoading, error: reviewError },
   ] = useAddNewReviewMutation();
-  const [
-    addReplyInReview,
-    { isSuccess: replySuccess, isLoading: replyLoading, error: replyError },
-  ] = useAddReplyInReviewMutation();
+  const [addReplyInReview, { isSuccess: replySuccess, error: replyError }] =
+    useAddReplyInReviewMutation();
   const [activeBar, setActiveBar] = useState(0);
   const [rating, setRating] = useState(1);
   const [answer, setAnswer] = useState("");
@@ -425,7 +423,7 @@ const QuestionItem = ({
             <h5 className="text-[20px]">{item?.user.name}</h5>
             <p>{item?.question}</p>
             <small className="text-[#ffffff83]">
-              {!item.createdAt ? "" : format(item?.createdAt)}
+              <TimeAgo date={item.createdAt} />
             </small>
           </div>
         </div>
@@ -476,7 +474,7 @@ const QuestionItem = ({
                   </div>
                   <p className="text-[#ffffff96]">{item.answer}</p>
                   <small className="text-[#ffffff83]">
-                    {!item.createdAt ? "" : format(item?.createdAt)}
+                    <TimeAgo date={item.createdAt} />
                   </small>
                 </div>
               </div>
@@ -567,7 +565,7 @@ const ReviewItem = ({
             <Ratings rating={item.rating} />
             <p>{item.comment}</p>
             <small className="text-[#ffffff83]">
-              {format(item?.createdAt)}
+              <TimeAgo date={item.createdAt} />
             </small>
           </div>
         </div>
@@ -618,7 +616,7 @@ const ReviewItem = ({
                   </div>
                   <p className="text-[#ffffff96]">{item.comment}</p>
                   <small className="text-[#ffffff83]">
-                    {!item.createdAt ? "" : format(item?.createdAt)}
+                    <TimeAgo date={item.createdAt} />
                   </small>
                 </div>
               </div>

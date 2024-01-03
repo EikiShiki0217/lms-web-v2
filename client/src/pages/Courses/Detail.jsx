@@ -5,7 +5,7 @@ import CoursePlayer from "../../utils/CoursePlayer";
 import { IoCheckmarkDoneOutline } from "react-icons/io5";
 import { useSelector } from "react-redux";
 import { Link } from "react-router-dom";
-import { format } from "timeago.js";
+import TimeAgo from "react-timeago";
 import CourseContentList from "./CourseContentList";
 import { Toaster, toast } from "react-hot-toast";
 import { useBuyCourseMutation } from "../../features/courses/coursesApi";
@@ -14,7 +14,7 @@ import Loader from "../../components/Loader";
 
 const Detail = ({ course }) => {
   const { user } = useSelector((state) => state.auth);
-  const [buyCourse, { data, error, isSuccess }] = useBuyCourseMutation();
+  const [buyCourse, { error, isSuccess }] = useBuyCourseMutation();
   const discountPercentege =
     ((course?.estimatedPrice - course?.price) / course?.estimatedPrice) * 100;
   const discountPercentegePrice = discountPercentege.toFixed(0);
@@ -26,7 +26,11 @@ const Detail = ({ course }) => {
     if (!user) {
       toast.error("Нэвтэрнэ үү!");
     } else {
-      await buyCourse(course._id);
+      if (user?.unit > course?.price) {
+        await buyCourse(course._id);
+      } else {
+        toast.error("Дансны үлдэгдэл хүрэхгүй байна. Цэнэглэнэ үү!");
+      }
     }
   };
 
@@ -155,7 +159,7 @@ const Detail = ({ course }) => {
                           </div>
                           <p className="text-white">{item.comment}</p>
                           <small className="text-[#ffffff83]">
-                            {format(item.createdAt)}
+                            <TimeAgo date={item.createdAt} />
                           </small>
                         </div>
                         <div className="pl-2 flex 800px:hidden items-center">

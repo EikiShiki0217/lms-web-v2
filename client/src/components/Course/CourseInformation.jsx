@@ -6,8 +6,8 @@ const CourseInformation = ({
   setCourseInfo,
   active,
   setActive,
-  setDemoVideoFile,
-  demoVideoFile,
+  setVideoFiles,
+  videoFiles,
 }) => {
   const [dragging, setDragging] = useState(false);
 
@@ -168,13 +168,17 @@ const CourseInformation = ({
               accept="video/*"
               id="video"
               className="hidden"
-              onChange={(e) => setDemoVideoFile(e.target.files[0])}
+              onChange={(e) => {
+                const updatedData = [...videoFiles];
+                updatedData[0] = e.target.files[0];
+                setVideoFiles(updatedData);
+              }}
             />
             <label
               className="w-full min-h-[40px] border-white p-3 flex items-center text-white bg-transparent border rounded h-[40px] px-2 outline-none mt-[10px] font-Poppins"
               htmlFor="video"
             >
-              {demoVideoFile ? demoVideoFile?.name : "Бичлэг оруулах"}
+              {videoFiles.length > 0 ? videoFiles[0].name : "Бичлэг оруулах"}
             </label>
             {/* <div onClick={() => widgetRef.current.open()}>Upload</div> */}
           </div>

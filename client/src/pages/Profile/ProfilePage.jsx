@@ -4,7 +4,6 @@ import Header from "../../components/Header.jsx";
 import Profile from "../../components/Profile/Profile";
 import { useSelector } from "react-redux";
 import Footer from "../../components/Footer";
-import Loader from "../../components/Loader";
 
 const ProfilePage = () => {
   const [open, setOpen] = useState(false);

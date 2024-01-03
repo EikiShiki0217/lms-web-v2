@@ -16,6 +16,7 @@ const MyCourses = () => {
       setCourses(data?.courses);
     }
   }, [data, isLoading]);
+
   return (
     <div className="w-[80%] m-auto">
       <br />

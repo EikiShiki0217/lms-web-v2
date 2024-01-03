@@ -9,7 +9,6 @@ const CourseContent = ({
   setActive,
   courseContentData,
   setCourseContentData,
-  handleSubmit: handleCourseSubmit,
   videoFiles,
   setVideoFiles,
 }) => {
@@ -87,7 +86,6 @@ const CourseContent = ({
     } else {
       setActiveSection(activeSection + 1);
       const newContent = {
-        videoUrl: "",
         title: "",
         description: "",
         videoSection: `Хичээлийн Гарчиг ${activeSection}`,
@@ -111,7 +109,7 @@ const CourseContent = ({
     ) {
       toast.error("Section can't be empty");
     } else {
-      handleCourseSubmit();
+      setActive(active + 1);
     }
   };
   return (
@@ -123,7 +121,7 @@ const CourseContent = ({
             index === 0 ||
             item.videoSection !== courseContentData[index - 1].videoSection;
           return (
-            <>
+            <div key={index}>
               <div
                 className={`w-full bg-[#cdc8c817] p-4 ${
                   showSectionInput ? "mb-5" : "mb-0"
@@ -212,23 +210,25 @@ const CourseContent = ({
                       <label className="text-[20px] font-Poppins text-white">
                         Бичлэг
                       </label>
+                      <label
+                        className="w-full min-h-[40px] border-white p-3 flex items-center text-white bg-transparent border rounded h-[40px] px-2 outline-none mt-[10px] font-Poppins"
+                        htmlFor={`video-${index}`}
+                      >
+                        {videoFiles.length > index + 1
+                          ? videoFiles[index + 1]?.name
+                          : "Бичлэг оруулах" + index}
+                      </label>
                       <input
                         type="file"
                         accept="video/*"
-                        id="video"
+                        id={`video-${index}`}
                         className="hidden"
-                        onChange={(e) =>
-                          setVideoFiles([...videoFiles, e.target.files[0]])
-                        }
+                        onChange={(e) => {
+                          const updatedData = [...videoFiles];
+                          updatedData[index + 1] = e.target.files[0];
+                          setVideoFiles(updatedData);
+                        }}
                       />
-                      <label
-                        className="w-full min-h-[40px] border-white p-3 flex items-center text-white bg-transparent border rounded h-[40px] px-2 outline-none mt-[10px] font-Poppins"
-                        htmlFor="video"
-                      >
-                        {videoFiles[index]
-                          ? videoFiles[index]?.name
-                          : "Бичлэг оруулах"}
-                      </label>
                     </div>
                     <div className="mb-3">
                       <label className="text-[20px] font-Poppins text-white">
@@ -249,7 +249,7 @@ const CourseContent = ({
                       <br />
                     </div>
                     {item?.links.map((link, linkIndex) => (
-                      <div className="mb-3 block">
+                      <div className="mb-3 block" key={index}>
                         <div className="w-full flex items-center justify-between">
                           <label className="text-[20px] font-Poppins text-white">
                             Link {linkIndex + 1}
@@ -316,7 +316,7 @@ const CourseContent = ({
                   </div>
                 )}
               </div>
-            </>
+            </div>
           );
         })}
         <br />

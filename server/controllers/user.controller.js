@@ -78,7 +78,7 @@ export const createActivationToken = (user) => {
     },
     process.env.ACTIVATION_SECRET,
     {
-      expiresIn: "5m",
+      expiresIn: "5h",
     }
   );
 
@@ -178,7 +178,7 @@ export const updateAccessToken = CatchAsyncError(async (req, res, next) => {
     const user = await userModel.findById(decoded.id);
 
     const accessToken = jwt.sign({ id: user._id }, process.env.ACCESS_TOKEN, {
-      expiresIn: "5m",
+      expiresIn: "5h",
     });
 
     const refreshToken = jwt.sign({ id: user._id }, process.env.REFRESH_TOKEN, {

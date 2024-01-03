@@ -33,7 +33,7 @@ const ProfileImage = ({
             </div>
           </label>
         </div>
-        <div className="w-[85%] flex mx-auto mt-[-80px] justify-between align-bottom">
+        <div className="w-[95%] flex mx-auto mt-[-80px] justify-between align-bottom">
           <div className="flex flex-row align-middle justify-start">
             <div className="flex relative w-fit rounded-[50%]">
               <div className="relative inline-flex items-center justify-center text-center align-middle overflow-hidden rounded-full h-[160px] w-[160px] min-w-[160px] bg-gradient-to-b from-gray-900 to-black">
@@ -58,16 +58,31 @@ const ProfileImage = ({
               </label>
             </div>
             <div className="flex relative">
-              <p className="ml-5 text-[50px] flex items-end">{user.name}</p>
+              <p className="ml-5 text-[30px] mb-4 flex items-end">
+                {user.name.split(" ")[0]}
+              </p>
             </div>
           </div>
           <div className="flex flex-row align-middle justify-end">
             <div className="flex relative items-end">
-              <div className="mb-4 w-[150px] h-[40px] border border-[#37a39a] justify-center text-[#fff] rounded-[3px] mt-8 cursor-pointer flex items-center">
+              <div className="flex flex-col items-end">
+                <p className="ml-5 text-[17px] mb-1 flex items-end">
+                  Данс: {user.userId}
+                </p>
+                <p className="ml-5 text-[17px] mb-2 flex items-end">
+                  Үлдэгдэл: {user.unit}
+                </p>
+              </div>
+              <div className="ml-5 mb-4 p-5 h-[40px] border border-[#37a39a] justify-center text-[#fff] rounded-[3px] mt-8 cursor-pointer flex items-center">
+                Цэнэглэх
+              </div>
+              <div className="ml-5 mb-4 p-5 h-[40px] border border-[#37a39a] justify-center text-[#fff] rounded-[3px] mt-8 cursor-pointer flex items-center">
                 Хувийн мэдээлэл
               </div>
-              <div className="mb-4 ml-5 w-[150px] h-[40px] border border-[#37a39a] justify-center text-[#fff] rounded-[3px] mt-8 cursor-pointer flex items-center"
-              onClick={() => logOutHandler()}>
+              <div
+                className="mb-4 ml-5 p-5 h-[40px] border border-[#37a39a] justify-center text-[#fff] rounded-[3px] mt-8 cursor-pointer flex items-center"
+                onClick={() => logOutHandler()}
+              >
                 Гарах
               </div>
             </div>

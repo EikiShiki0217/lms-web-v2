@@ -1,14 +1,7 @@
 "use client";
 import React from "react";
-import Ratings from "../../utils/Ratings";
-import CoursePlayer from "../../utils/CoursePlayer";
-import { IoCheckmarkDoneOutline } from "react-icons/io5";
-import { useSelector } from "react-redux";
-import { Link } from "react-router-dom";
-import { format } from "timeago.js";
 import CourseContentList from "./CourseContentList";
-import { GrLinkPrevious, GrLinkNext } from "react-icons/gr";
-import { Toaster, toast } from "react-hot-toast";
+import { Toaster } from "react-hot-toast";
 import { useGetCourseContentQuery } from "../../features/courses/coursesApi";
 import Loader from "../../components/Loader";
 import CourseContentMedia from "./CourseContentMedia";

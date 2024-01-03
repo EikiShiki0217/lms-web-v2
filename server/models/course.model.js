@@ -34,7 +34,6 @@ const courseDataSchema = new Schema({
   videoSection: String,
   description: String,
   videoLength: Number,
-  videoPlayer: String,
   links: [linkSchema],
   suggestion: String,
   questions: [commentSchema],
