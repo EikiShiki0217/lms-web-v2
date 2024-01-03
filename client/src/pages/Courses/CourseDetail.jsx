@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
+import { useParams, useNavigate } from "react-router-dom";
 import { useGetCourseDetailsQuery } from "../../features/courses/coursesApi";
 import Header from "../../components/Header";
 import Footer from "../../components/Footer";
@@ -11,13 +11,17 @@ const CourseDetail = ({ user }) => {
   const [open, setOpen] = useState(false);
   const [route, setRoute] = useState("Login");
   const [course, setCourse] = useState([]);
-  const { data, isLoading } = useGetCourseDetailsQuery(courseId);
+  const { data, isLoading, refetch, error } = useGetCourseDetailsQuery(courseId);
 
+  const navigate = useNavigate();
   useEffect(() => {
     if (!isLoading) {
       setCourse(data?.course);
     }
-  }, [data, isLoading]);
+    if(!course) {
+      navigate("/courses");
+    }
+  }, [course, data, error, isLoading, navigate]);
 
   return (
     <>
@@ -32,7 +36,7 @@ const CourseDetail = ({ user }) => {
             route={route}
             setRoute={setRoute}
           />
-          <Detail course={course} />
+          {course && <Detail course={course} refetch={refetch} />}
           <Footer />
         </div>
       )}

@@ -4,11 +4,13 @@ import { useState } from "react";
 import { useGetAllUsersQuery } from "../../features/user/userApi";
 import { useEffect } from "react";
 import UserItemList from "./UserListItem";
+import AdminChargeModal from "./AdminChargeModal";
 
 const AdminGetAllUsers = () => {
   const { isLoading, data } = useGetAllUsersQuery();
   const [users, setUsers] = useState([]);
   const [open, setOpen] = useState(false);
+  const [userId, setUserId] = useState(0);
   useEffect(() => {
     if (!isLoading) {
       setUsers(data?.users);
@@ -24,11 +26,15 @@ const AdminGetAllUsers = () => {
             <UserItemList
               item={item}
               key={index}
+              setUserId={setUserId}
               open={open}
               setOpen={setOpen}
             />
           ))}
       </div>
+      {open && (
+        <AdminChargeModal open={open} setOpen={setOpen} userId={userId} />
+      )}
     </div>
   );
 };

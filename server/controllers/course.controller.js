@@ -83,6 +83,26 @@ export const getSingleCourse = CatchAsyncError(async (req, res, next) => {
   }
 });
 
+export const deleteCourse = CatchAsyncError(async (req, res, next) => {
+  try {
+    const { courseId } = req.body;
+
+
+    const course = await CourseModel.findById(courseId);
+    await cloudinary.v2.uploader.destroy(course?.demoUrl?.public_id);
+    await cloudinary.v2.uploader.destroy(course?.thumbnail?.public_id);
+    for (const item of course.courseData) {
+      await cloudinary.v2.uploader.destroy(item?.videoUrl?.public_id);
+    }
+    await CourseModel.findByIdAndDelete(courseId);
+    res.status(200).json({
+      success: true,
+    });
+  } catch (error) {
+    return next(new ErrorHandler(error.message, 400));
+  }
+});
+
 export const getAllCourses = CatchAsyncError(async (req, res, next) => {
   try {
     const courses = await CourseModel.find().select(
@@ -136,11 +156,13 @@ export const getCourseByUser = CatchAsyncError(async (req, res, next) => {
       );
     }
 
-    const course = await CourseModel.findById(courseId).select("+reviews.user.avatar");
+    const course = await CourseModel.findById(courseId).select(
+      "+reviews.user.avatar"
+    );
 
     const content = course?.courseData;
     const reviews = course?.reviews;
-    
+
     res.status(201).json({
       success: true,
       content,

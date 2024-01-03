@@ -12,6 +12,7 @@ import {
   getPurchasedCourses,
   getSingleCourse,
   uploadCourse,
+  deleteCourse,
 } from "../controllers/course.controller.js";
 import { isAutheticated } from "../middleware/auth.js";
 
@@ -26,6 +27,7 @@ courseRouter.put("/add-question", isAutheticated, addQuestion);
 courseRouter.put("/add-answer", isAutheticated, addAnswer);
 courseRouter.put("/add-review/:id", isAutheticated, addReview);
 courseRouter.put("/add-reply", isAutheticated, addReplyToReview);
+courseRouter.put("/delete-course", isAutheticated, deleteCourse);
 courseRouter.get("/get-my-courses", isAutheticated, getMyCourses)
 courseRouter.get("/get-purchased-courses", isAutheticated, getPurchasedCourses);
 courseRouter.post("/buy-course", isAutheticated, buyCourse);

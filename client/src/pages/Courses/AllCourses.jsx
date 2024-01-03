@@ -4,14 +4,15 @@ import CourseCard from "../../components/Course/CourseCard";
 import { CircleLoader } from "react-spinners";
 
 const AllCourses = () => {
-  const { isSuccess, data } = useGetAllCoursesQuery();
+  const { isSuccess, data, refetch } = useGetAllCoursesQuery();
   const [courses, setCourses] = useState([]);
 
   useEffect(() => {
     if (isSuccess) {
       setCourses(data.courses);
     }
-  }, [data, isSuccess]);
+    refetch();
+  }, [data, isSuccess, refetch]);
 
   return (
     <>
@@ -28,7 +29,7 @@ const AllCourses = () => {
           <div className="min-h-screen grid grid-cols-1 gap-[20px] md:grid-cols-2 md:gap-[25px] lg:grid-cols-3 lg:gap-[25px] xl:grid-cols-3 xl:gap-[35px] mb-12 border-0">
             {courses &&
               courses.map((item, index) => (
-                <CourseCard item={item} key={index} />
+                <CourseCard item={item} key={index}/>
               ))}
           </div>
         </div>

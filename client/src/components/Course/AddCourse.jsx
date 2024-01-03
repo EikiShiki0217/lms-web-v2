@@ -20,6 +20,7 @@ const AddCourse = () => {
   const [active, setActive] = useState(0);
   const [videoFiles, setVideoFiles] = useState([]);
   const [videoUrls, setVideoUrls] = useState([]);
+  const [videoId, setVideoId] = useState([]);
   const [courseInfo, setCourseInfo] = useState({
     name: "",
     description: "",
@@ -102,6 +103,7 @@ const AddCourse = () => {
             const fetchResponse = await response.json();
             console.info("File upload complete.");
             setVideoUrls((prevUrls) => [...prevUrls, fetchResponse.url]);
+            setVideoId((prevId) => [...prevId, fetchResponse.public_id]);
             resolve(); // Resolve the promise when the upload is complete
           }
         } catch (error) {
@@ -129,7 +131,10 @@ const AddCourse = () => {
     }));
     const formattedCourseContentData = courseContentData.map(
       (courseContent, index) => ({
-        videoUrl: videoUrls[index + 1],
+        videoUrl: {
+          public_id: videoId[index + 1],
+          url: videoUrls[index + 1],
+        },
         title: courseContent.title,
         description: courseContent.description,
         videoSection: courseContent.videoSection,
@@ -147,7 +152,10 @@ const AddCourse = () => {
       estimatedPrice: courseInfo.estimatedPrice,
       tags: courseInfo.tags,
       level: courseInfo.level,
-      demoUrl: videoUrls[0],
+      demoUrl: {
+        public_id: videoId[0],
+        url: videoUrls[0],
+      },
       thumbnail: courseInfo.thumbnail,
       totalVideos: courseContentData.length,
       benefits: formattedBenefits,
@@ -159,9 +167,16 @@ const AddCourse = () => {
   }, [
     benefits,
     courseContentData,
-    courseInfo,
+    courseInfo.description,
+    courseInfo.estimatedPrice,
+    courseInfo.level,
+    courseInfo.name,
+    courseInfo.price,
+    courseInfo.tags,
+    courseInfo.thumbnail,
     createCourse,
     prerequisites,
+    videoId,
     videoUrls,
   ]);
 
@@ -207,7 +222,10 @@ const AddCourse = () => {
     }));
     const formattedCourseContentData = courseContentData.map(
       (courseContent, index) => ({
-        videoUrl: videoUrls[index + 1],
+        videoUrl: {
+          public_id: videoId[index + 1],
+          url: videoUrls[index + 1],
+        },
         title: courseContent.title,
         description: courseContent.description,
         videoSection: courseContent.videoSection,
@@ -225,7 +243,10 @@ const AddCourse = () => {
       estimatedPrice: courseInfo.estimatedPrice,
       tags: courseInfo.tags,
       level: courseInfo.level,
-      demoUrl: videoUrls[0],
+      demoUrl: {
+        public_id: videoId[0],
+        url: videoUrls[0],
+      },
       thumbnail: courseInfo.thumbnail,
       totalVideos: courseContentData.length,
       benefits: formattedBenefits,
@@ -237,9 +258,16 @@ const AddCourse = () => {
   }, [
     benefits,
     courseContentData,
-    courseInfo,
+    courseInfo.description,
+    courseInfo.estimatedPrice,
+    courseInfo.level,
+    courseInfo.name,
+    courseInfo.price,
+    courseInfo.tags,
+    courseInfo.thumbnail,
     createCourse,
     prerequisites,
+    videoId,
     videoUrls,
   ]);
 

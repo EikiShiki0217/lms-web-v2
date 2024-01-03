@@ -28,7 +28,16 @@ const commentSchema = new Schema(
 );
 
 const courseDataSchema = new Schema({
-  videoUrl: String,
+  videoUrl: {
+    public_id: {
+      required: true,
+      type: String,
+    },
+    url: {
+      required: true,
+      type: String,
+    },
+  },
   videoThumbnail: Object,
   title: String,
   videoSection: String,
@@ -75,8 +84,14 @@ const courseSchema = new Schema({
     requried: true,
   },
   demoUrl: {
-    type: String,
-    required: true,
+    public_id: {
+      required: true,
+      type: String,
+    },
+    url: {
+      required: true,
+      type: String,
+    },
   },
   benefits: [
     {

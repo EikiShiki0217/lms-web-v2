@@ -8,19 +8,22 @@ import { Link } from "react-router-dom";
 import TimeAgo from "react-timeago";
 import CourseContentList from "./CourseContentList";
 import { Toaster, toast } from "react-hot-toast";
-import { useBuyCourseMutation } from "../../features/courses/coursesApi";
+import {
+  useBuyCourseMutation,
+  useDeleteCourseMutation,
+} from "../../features/courses/coursesApi";
 import { useEffect } from "react";
 import Loader from "../../components/Loader";
 
-const Detail = ({ course }) => {
+const Detail = ({ course, refetch }) => {
   const { user } = useSelector((state) => state.auth);
   const [buyCourse, { error, isSuccess }] = useBuyCourseMutation();
+  const [deleteCourse, { isSuccess: suc }] = useDeleteCourseMutation();
   const discountPercentege =
     ((course?.estimatedPrice - course?.price) / course?.estimatedPrice) * 100;
   const discountPercentegePrice = discountPercentege.toFixed(0);
-  console.log(course);
   const isPurchased =
-    user && user?.courses?.find((item) => item._id === course._id);
+    user && user?.courses?.find((item) => item._id === course?._id);
 
   const handleOrder = async (e) => {
     if (!user) {
@@ -35,21 +38,25 @@ const Detail = ({ course }) => {
   };
 
   const DeleteCourse = async () => {
-    await DeleteCourse(course._id);
+    await deleteCourse({
+      courseId: course._id,
+    });
   };
 
   useEffect(() => {
     if (isSuccess) {
       window.location.reload();
     }
-
+    if (suc) {
+      refetch();
+    }
     if (error) {
       if ("data" in error) {
         const errorData = error;
         toast.error(errorData.data.message);
       }
     }
-  }, [error, isSuccess]);
+  }, [error, isSuccess, refetch, suc]);
 
   return (
     <div>
@@ -199,35 +206,39 @@ const Detail = ({ course }) => {
                       Устгах
                     </div>
                   )}
-                  {course.user._id === user._id ? (
-                    <div className="flex justify-between w-full">
-                      <div
-                        className="flex flex-row justify-center items-center py-3 px-6 rounded-full min-h-[45px]  text-[16px] font-semibold !w-[180px] my-3 font-Poppins cursor-pointer !bg-[crimson]"
-                        onClick={DeleteCourse}
-                      >
-                        Устгах
-                      </div>
-                      <div
-                        className="flex flex-row justify-center items-center py-3 px-6 rounded-full min-h-[45px]  text-[16px] font-semibold !w-[180px] my-3 font-Poppins cursor-pointer !bg-[crimson]"
-                        onClick={DeleteCourse}
-                      >
-                        Засварлах
-                      </div>
-                    </div>
-                  ) : isPurchased ? (
-                    <Link
-                      className="flex flex-row justify-center items-center py-3 px-6 rounded-full min-h-[45px]  text-[16px] font-semibold !w-[180px] my-3 font-Poppins cursor-pointer !bg-[crimson]"
-                      to={`/course-access/${course._id}`}
-                    >
-                      Хичээл үзэх
-                    </Link>
-                  ) : (
-                    <div
-                      className="flex flex-row justify-center items-center py-3 px-6 rounded-full min-h-[45px]  text-[16px] font-semibold !w-[180px] my-3 font-Poppins cursor-pointer !bg-[crimson]"
-                      onClick={handleOrder}
-                    >
-                      Худалдаж авах
-                    </div>
+                  {user.role === "user" && (
+                    <>
+                      {course.user._id === user._id ? (
+                        <div className="flex justify-between w-full">
+                          <div
+                            className="flex flex-row justify-center items-center py-3 px-6 rounded-full min-h-[45px]  text-[16px] font-semibold !w-[180px] my-3 font-Poppins cursor-pointer !bg-[crimson]"
+                            onClick={DeleteCourse}
+                          >
+                            Устгах
+                          </div>
+                          {/* <div
+                            className="flex flex-row justify-center items-center py-3 px-6 rounded-full min-h-[45px]  text-[16px] font-semibold !w-[180px] my-3 font-Poppins cursor-pointer !bg-[crimson]"
+                            onClick={DeleteCourse}
+                          >
+                            Засварлах
+                          </div> */}
+                        </div>
+                      ) : isPurchased ? (
+                        <Link
+                          className="flex flex-row justify-center items-center py-3 px-6 rounded-full min-h-[45px]  text-[16px] font-semibold !w-[180px] my-3 font-Poppins cursor-pointer !bg-[crimson]"
+                          to={`/course-access/${course._id}`}
+                        >
+                          Хичээл үзэх
+                        </Link>
+                      ) : (
+                        <div
+                          className="flex flex-row justify-center items-center py-3 px-6 rounded-full min-h-[45px]  text-[16px] font-semibold !w-[180px] my-3 font-Poppins cursor-pointer !bg-[crimson]"
+                          onClick={handleOrder}
+                        >
+                          Худалдаж авах
+                        </div>
+                      )}
+                    </>
                   )}
                 </div>
               </div>
